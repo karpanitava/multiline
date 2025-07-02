@@ -1,0 +1,10 @@
+pipeline {
+	agent any 
+	stages {
+	  stage('Deployment') {
+	     steps {
+	        bat '''curl -u hariadmin:hariadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/newpo/target/mywebapp.war" "http://localhost:8888/manager/text/deploy?path=/testapp2&update=true"'''
+
+	     {
+	{
+{
