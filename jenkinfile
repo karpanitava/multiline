@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Download') {
+            steps {
+                git branch: 'main', poll: false, url: 'https://github.com/karpanitava/mavenbuild.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                bat 'mvn  package'
+                //sh 'mvn clean package'//
+            }
+        }
+
+        stage('Deployment') {
+            steps {
+                bat '''curl -u hariadmin:hariadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/newpo/target/mywebapp.war" "http://localhost:8888/manager/text/deploy?path=/testapp2&update=true"'''
+            }
+        }
+
+        stage('Testing') {
+            steps {
+                git url: 'https://github.com/karpanitava/tetsingjava.git'
+                bat 'cmd java -jar C:/ProgramData/Jenkins/.jenkins/workspace/newpo/test.jar'
+            }
+        }
+        stage('Check Results') {
+                steps {
+                    script {
+                        if (currentBuild.result == 'FAILURE') {
+                            echo "Tests failed!"
+                        } else {
+                            echo "Tests passed!"
+                        }
+                    }
+                }
+        }
+        stage("Delivery Approval") {
+            steps {
+                input message: 'Approve deployment to Production?', ok: 'Deploy to Production', submitter: 'Adarsh'
+            }
+        }
+
+        stage("Delivery") {
+            steps {
+                bat '''curl -u prasadadmin:prasadadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/newpo/target/mywebapp.war" "http://localhost:8889/manager/text/deploy?path=/prodapp2&update=true"'''
+            }
+        }
+    } // closes stages
+} // closes pipeline
