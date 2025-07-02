@@ -17,14 +17,14 @@ pipeline {
 
         stage('Deployment') {
             steps {
-                bat '''curl -u hariadmin:hariadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/newpo/target/mywebapp.war" "http://localhost:8888/manager/text/deploy?path=/testapp2&update=true"'''
+                bat '''curl -u hariadmin:hariadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/multiline/target/mywebapp.war" "http://localhost:8888/manager/text/deploy?path=/testapp2&update=true"'''
             }
         }
 
         stage('Testing') {
             steps {
                 git url: 'https://github.com/karpanitava/tetsingjava.git'
-                bat 'cmd java -jar C:/ProgramData/Jenkins/.jenkins/workspace/newpo/test.jar'
+                bat 'cmd java -jar C:/ProgramData/Jenkins/.jenkins/workspace/multiline/testwebapp.jar'
             }
         }
         stage('Check Results') {
@@ -46,7 +46,7 @@ pipeline {
 
         stage("Delivery") {
             steps {
-                bat '''curl -u prasadadmin:prasadadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/newpo/target/mywebapp.war" "http://localhost:8889/manager/text/deploy?path=/prodapp2&update=true"'''
+                bat '''curl -u prasadadmin:prasadadmin -T "C:/ProgramData/Jenkins/.jenkins/workspace/multiline/target/mywebapp.war" "http://localhost:8889/manager/text/deploy?path=/prodapp2&update=true"'''
             }
         }
     } // closes stages
